@@ -1,17 +1,13 @@
 import {Process, Result} from "../types/process"
 
-export function FirstInFirstOut(processes: Process[]): Result
+//first in first out
+export function fifo(processes)
 {
-    const result: Result =
-    {
-        timeline: [],
-        AverageWaitTime: 0,
-        AverageTurnAroundTime: 0, 
-    };
+    const result = new Result([], 0, 0);
     
     const sorted = processes.sort( (a, b) => a.arrivalTime - b.arrivalTime )
     
-    let numProcesses = processes.length;
+    let numProcesses = sorted.length;
     let currTime = 0; //for the timeline
     let totalWaitTime = 0; //for calculating average wait time late
     let WaitTime = 0;
@@ -20,23 +16,24 @@ export function FirstInFirstOut(processes: Process[]): Result
 
     for(let i = 0; i < numProcesses; i++)
     {
-        if(processes[i].arrivalTime > currTime)
+        if(sorted[i].arrivalTime > currTime)
         {
-            currTime = processes[i].arrivalTime;
+            currTime = sorted[i].arrivalTime;
         }
 
-        result.timeline.push({time: currTime, process: processes[i].pid});
+        result.timeline.push({time: currTime, process: sorted[i].pid});
+        currTime = currTime + sorted[i].burstTime;
         
         //wait time = turnaround time - burst time
         //turnaround time = completion time - arrival time
-        TurnAroundTime = currTime - processes[i].arrivalTime;
-        WaitTime = TurnAroundTime - processes[i].burstTime;
+        TurnAroundTime = currTime - sorted[i].arrivalTime;
+        WaitTime = TurnAroundTime - sorted[i].burstTime;
 
         totalTurnAroundTime = totalTurnAroundTime + TurnAroundTime;
         totalWaitTime = totalWaitTime + WaitTime;
     }
 
-    result.AverageTurnAroundTime = totalWaitTime/numProcesses;
+    result.AverageTurnAroundTime = totalTurnAroundTime/numProcesses;
     result.AverageWaitTime = totalWaitTime/numProcesses;
 
     return result
