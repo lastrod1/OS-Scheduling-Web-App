@@ -8,19 +8,16 @@ export function sjf(processes: Process[]): Result
         AverageWaitTime: 0,
         AverageTurnAroundTime: 0, 
     };
-    
     const sorted = processes.sort( (a, b) => a.arrivalTime - b.arrivalTime )
     
     let numProcesses = sorted.length;
     let currTime = 0; //for the timeline
-    let totalWaitTime = 0; //for calculating average wait time late
-    let WaitTime = 0;
-    let totalTurnAroundTime = 0; //for calculating average turnaround time later
-    let TurnAroundTime = 0;
-    let index = -1; //index with shortest arrival time
+    let WaitTime = 0; //for calculating average wait time late
+    let TurnAroundTime = 0; //for calculating average turnaround time later
 
     for(let i = 0; i<numProcesses; i++)
     {
+        let index = -1;
         if(sorted[i].arrivalTime >= currTime)
         {
             currTime = sorted[i].arrivalTime;
@@ -29,24 +26,28 @@ export function sjf(processes: Process[]): Result
         //loop to find process with shortest burst time
         for(let j = 0; j<numProcesses; j++)
         {
-            if((sorted[j].arrivalTime <= currTime) && (sorted[j].burstTime < sorted[index].burstTime) && (sorted[j].burstTime != -1) || index == -1)
+            if(sorted[j].arrivalTime <=currTime && !sorted[j].completed)
             {
-                index = j;
+                if(index === -1 || sorted[j].burstTime < sorted[index].burstTime)
+                {
+                    index = j;
+                }
             }
-            result.timeline.push({time: currTime, process: sorted[index].pid});
         }
         currTime = currTime + sorted[index].burstTime;
+        result.timeline.push({time: currTime, process: sorted[index].pid});
 
+        //wait time = turnaround time - burst time
+        //turnaround time = completion time - arrival time
         TurnAroundTime = currTime - sorted[index].arrivalTime;
-        WaitTime = TurnAroundTime - sorted[index].burstTime;     
+        WaitTime = TurnAroundTime - sorted[index].burstTime;
+        result.AverageTurnAroundTime += TurnAroundTime;
+        result.AverageWaitTime += WaitTime;
 
-        totalTurnAroundTime = totalTurnAroundTime + TurnAroundTime;
-        totalWaitTime = totalWaitTime + WaitTime;
-
-        index = -1;
+        sorted[index].completed = true;
     }
-    result.AverageTurnAroundTime = totalTurnAroundTime/numProcesses;
-    result.AverageWaitTime = totalWaitTime/numProcesses;
+    result.AverageTurnAroundTime = result.AverageTurnAroundTime/numProcesses;
+    result.AverageWaitTime = result.AverageWaitTime/numProcesses;
 
     return result
 }

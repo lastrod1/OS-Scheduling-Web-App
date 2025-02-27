@@ -1,18 +1,17 @@
-export class Process {
-    constructor(pid, arrivalTime, burstTime, remainingTime, priority, queueLevel) {
-        this.pid = pid;
-        this.arrivalTime = arrivalTime;
-        this.burstTime = burstTime;
-        this.remainingTime = remainingTime;
-        this.priority = priority;
-        this.queueLevel = queueLevel;
-    }
+export interface Process
+{
+    pid: number;
+    arrivalTime: number; 
+    burstTime: number; 
+    completed: boolean;
+    remainingTime?: number;
+    priority?: number; 
+    queueLevel?: number;
 }
 
-export class Result {
-    constructor(timeline, AverageWaitTime, AverageTurnAroundTime) {
-        this.timeline = timeline;
-        this.AverageWaitTime = AverageWaitTime;
-        this.AverageTurnAroundTime = AverageTurnAroundTime;
-    }
+export interface Result
+{
+    timeline: {time: number; process: number}[];
+    AverageWaitTime: number;
+    AverageTurnAroundTime: number;
 }
