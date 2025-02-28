@@ -21,6 +21,7 @@ export function sjf(processes: Process[]): Result
         if(sorted[i].arrivalTime >= currTime)
         {
             currTime = sorted[i].arrivalTime;
+            result.timeline.push({time: currTime, process: 0});
         }
 
         //loop to find process with shortest burst time

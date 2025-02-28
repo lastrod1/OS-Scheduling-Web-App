@@ -7,16 +7,17 @@ import { generateProcesses } from "../utilities/processGenerator";
 import { Process, Result } from "../types/process";
 import { FirstInFirstOut } from "../algorithms/fifo";
 import { sjf } from "../algorithms/sjf";
+import { rr } from "../algorithms/rr";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const GanttChart = () => {
+const GanttChart = ({ numProcesses, quantum }: { numProcesses: number, quantum: number }) => {
   const [result, setResult] = useState<Result | null>(null);
   const [algorithm, setAlgorithm] = useState<string>('FIFO');
   const [processes, setProcesses] = useState<Process[]>([]);
 
   useEffect(() => {
-    const generatedProcesses = generateProcesses(10);
+    const generatedProcesses = generateProcesses(numProcesses); // Generate the specified number of random processes
     setProcesses(generatedProcesses);
     let resultFromAlgorithm: Result = { timeline: [], AverageWaitTime: 0, AverageTurnAroundTime: 0 };
 
@@ -24,10 +25,12 @@ const GanttChart = () => {
       resultFromAlgorithm = FirstInFirstOut(generatedProcesses);
     } else if (algorithm === 'SJF') {
       resultFromAlgorithm = sjf(generatedProcesses);
+    } else if (algorithm === 'RR') {
+      resultFromAlgorithm = rr(generatedProcesses, quantum);
     }
 
     setResult(resultFromAlgorithm); // Set result from the selected algorithm
-  }, [algorithm]);
+  }, [algorithm, numProcesses, quantum]);
 
   const generateGanttChartData = (result: Result) => {
     const labels: string[] = [];
@@ -39,7 +42,7 @@ const GanttChart = () => {
       const processId = entry.process;
       const currentTime = entry.time;
 
-      const label = `P${processId}`;
+      const label = processId === 0 ? "Idle" : `P${processId}`;
 
       // Add process label to the list if not already added
       if (!labels.includes(label)) {
@@ -68,7 +71,10 @@ const GanttChart = () => {
         {
           label: "Process Execution Time",
           data,
-          backgroundColor: "#ffa600", // Blue color
+          backgroundColor: (context: any) => {
+            const label = context.raw.y;
+            return label === "Idle" ? "rgba(200, 200, 200, 0.8)" : "rgba(52, 152, 219, 0.8)"; // Gray for Idle, Blue for processes
+          },
           borderColor: "#fff",
           borderWidth: 1,
           barThickness: 20,
@@ -111,6 +117,7 @@ const GanttChart = () => {
         <select id="algorithm" value={algorithm} onChange={(e) => setAlgorithm(e.target.value)}>
           <option value="FIFO">FIFO</option>
           <option value="SJF">SJF</option>
+          <option value="RR">RR</option>
         </select>
       </div>
       <div style={{ display: "flex", justifyContent: "space-between" }}>

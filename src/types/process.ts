@@ -4,7 +4,7 @@ export interface Process
     arrivalTime: number; 
     burstTime: number; 
     completed: boolean;
-    remainingTime?: number;
+    remainingTime: number;
     priority?: number; 
     queueLevel?: number;
 }

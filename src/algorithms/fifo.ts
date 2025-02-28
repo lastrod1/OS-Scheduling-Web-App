@@ -21,6 +21,7 @@ export function FirstInFirstOut(processes: Process[]): Result
         if(processes[i].arrivalTime > currTime)
         {
             currTime = processes[i].arrivalTime;
+            result.timeline.push({time: currTime, process: 0});
         }
         processes[i].completed = true;
         currTime += processes[i].burstTime;
