@@ -8,6 +8,7 @@ import { Process, Result } from "../types/process";
 import { FirstInFirstOut } from "../algorithms/fifo";
 import { sjf } from "../algorithms/sjf";
 import { rr } from "../algorithms/rr";
+import { stcf } from "@/algorithms/stcf";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -27,6 +28,8 @@ const GanttChart = ({ numProcesses, quantum }: { numProcesses: number, quantum: 
       resultFromAlgorithm = sjf(generatedProcesses);
     } else if (algorithm === 'RR') {
       resultFromAlgorithm = rr(generatedProcesses, quantum);
+    } else if (algorithm === 'STCF') {
+      resultFromAlgorithm = stcf(generatedProcesses);
     }
 
     setResult(resultFromAlgorithm); // Set result from the selected algorithm
@@ -118,6 +121,7 @@ const GanttChart = ({ numProcesses, quantum }: { numProcesses: number, quantum: 
           <option value="FIFO">FIFO</option>
           <option value="SJF">SJF</option>
           <option value="RR">RR</option>
+          <option value="STCF">STCF</option>
         </select>
       </div>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
