@@ -4,7 +4,7 @@ import { useState } from "react";
 import GanttChart from "./GnattChart";
 
 export default function Home() {
-  const [numProcesses, setNumProcesses] = useState<number>(10);
+  const [numProcesses, setNumProcesses] = useState<number>(5);
   const [quantum, setQuantum] = useState<number>(3);
 
   return (

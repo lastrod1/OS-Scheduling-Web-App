@@ -13,7 +13,7 @@ export function stcf(processes: Process[]): Result {
     let TurnAroundTime = 0; // for calculating average turnaround time later
     let completedProcesses = 0;
     let shortest_index = -1; // index of process with shortest remaining time
-    let old_shortest = -1;
+    let currentProcess = -1;
 
     while (completedProcesses < numProcesses) {
         shortest_index = -1;
@@ -25,40 +25,47 @@ export function stcf(processes: Process[]): Result {
             }
         }
 
-        if (shortest_index == -1) {
-            currTime++;
-            old_shortest = -1;
-            continue;
-        }
-
-        if (sorted[shortest_index].remainingTime == 1) {
-            currTime += 1;
-            sorted[shortest_index].remainingTime -= 1;
-            sorted[shortest_index].completed = true;
-            completedProcesses++;
-            result.timeline.push({ time: currTime, process: sorted[shortest_index].pid });
-
-            // wait time = turnaround time - burst time
-            // turnaround time = completion time - arrival time
-            TurnAroundTime = currTime - sorted[shortest_index].arrivalTime;
-            result.AverageTurnAroundTime += TurnAroundTime;
-            result.AverageWaitTime += TurnAroundTime - sorted[shortest_index].burstTime;
-        } 
-
-        else 
+        if(shortest_index == -1) 
         {
-            sorted[shortest_index].remainingTime -= 1;
-            if (shortest_index != old_shortest && old_shortest != -1) {
-                result.timeline.push({ time: currTime, process: sorted[old_shortest].pid });
+            if(shortest_index != currentProcess) //switching from process to idle
+            {
+                result.timeline.push({ time: currTime, process: sorted[currentProcess].pid });
+                sorted[currentProcess].remainingTime -= 1;
+                currentProcess = shortest_index;
             }
-            else if (old_shortest == -1)
+        }
+        else if (shortest_index != currentProcess)
+        {
+            if(currentProcess == -1) //switching from idle to process
             {
                 result.timeline.push({ time: currTime, process: 0 });
             }
-            currTime += 1;
-            old_shortest = shortest_index;
+            else //switching from process to process
+            {
+                result.timeline.push({ time: currTime, process: sorted[currentProcess].pid });
+                sorted[currentProcess].remainingTime -= 1;
+            }
+            currentProcess = shortest_index;
         }
+        else //same process
+        {
+            sorted[currentProcess].remainingTime -= 1;
+        }
+
+        if(currentProcess != -1 && sorted[currentProcess].remainingTime == 0) //process completed
+        {
+            sorted[currentProcess].completed = true;
+            completedProcesses += 1;
+            TurnAroundTime = currTime - sorted[currentProcess].arrivalTime + 1;
+            result.AverageTurnAroundTime += TurnAroundTime;
+            result.AverageWaitTime += TurnAroundTime - sorted[currentProcess].burstTime;
+            result.timeline.push({ time: currTime, process: sorted[currentProcess].pid });
+            continue;
+        }
+
+        currTime += 1;
     }
+
     result.AverageTurnAroundTime = result.AverageTurnAroundTime / numProcesses;
     result.AverageWaitTime = result.AverageWaitTime / numProcesses;
 
