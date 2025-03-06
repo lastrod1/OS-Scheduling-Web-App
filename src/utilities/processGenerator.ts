@@ -18,7 +18,8 @@ export function generateProcesses(count:number) : Process[]
                         arrivalTime: Math.floor(Math.random() * MaxArrival) + 1, 
                         burstTime: burstTime,
                         completed: false,
-                        remainingTime: burstTime,});
+                        remainingTime: burstTime,
+                        queuelevel: 0});
     }
     return processes
 }
