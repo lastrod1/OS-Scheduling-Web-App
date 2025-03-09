@@ -46,7 +46,7 @@ export function mlfq(processes: Process[]): Result
             if(sorted[i].queuelevel == 0 && sorted[i].arrivalTime <= currTime && !sorted[i].completed && i == lastProcess)
             {
                 q1.push(sorted[i]);
-                lastProcess++; 
+                lastProcess++;
             }
         }
         let WorkingQueue = 0;;
@@ -65,11 +65,17 @@ export function mlfq(processes: Process[]): Result
 
         if(WorkingQueue == 0)
         {
-            if(q1[0].remainingTime <= q1quantum && q1[0].remainingTime > 0)
+            if(q1[0].remainingTime <= q1quantum)
             {
                 currTime += q1[0].remainingTime;
                 s-=q1[0].remainingTime;
                 q1[0].remainingTime = 0;
+                //wait time = turnaround time - burst time
+                //turnaround time = completion time - arrival time
+                TurnAroundTime = currTime - q1[0].arrivalTime;
+                result.AverageTurnAroundTime += currTime - q1[0].arrivalTime;
+                result.AverageWaitTime += TurnAroundTime - q1[0].burstTime;
+
                 result.timeline.push({time: currTime, process: q1[0].pid});
                 q1[0].completed = true;
                 completedProcesses++;
@@ -82,17 +88,34 @@ export function mlfq(processes: Process[]): Result
                 q1[0].remainingTime -= q1quantum;
                 result.timeline.push({time: currTime, process: q1[0].pid});
                 let temp : Process = q1[0];
-                q1.push(temp);
                 q1.shift();
+                if((temp.burstTime - temp.remainingTime) % allotment == 0)
+                {
+                    temp.queuelevel++;
+                    q2.push(temp);
+                }
+                else
+                {
+                    if(lastProcess < numProcesses && sorted[lastProcess].arrivalTime <= currTime)
+                    {
+                        q1.push(sorted[lastProcess]);
+                        lastProcess++;
+                    }
+                    q1.push(temp);
+                }
             }
         }
         else if(WorkingQueue == 1)
         {
-            if(q2[0].remainingTime <= q2quantum && q2[0].remainingTime > 0)
+            if(q2[0].remainingTime <= q2quantum)
             {
                 currTime += q2[0].remainingTime;
                 s-=q2[0].remainingTime;
                 q2[0].remainingTime = 0;
+                TurnAroundTime = currTime - q2[0].arrivalTime;
+                result.AverageTurnAroundTime += currTime - q2[0].arrivalTime;
+                result.AverageWaitTime += TurnAroundTime - q2[0].burstTime;
+
                 result.timeline.push({time: currTime, process: q2[0].pid});
                 q2[0].completed = true;
                 completedProcesses++;
@@ -107,11 +130,20 @@ export function mlfq(processes: Process[]): Result
                 let temp : Process = q2[0];
                 q2.push(temp);
                 q2.shift();
+                if((temp.burstTime - temp.remainingTime) % allotment == 0)
+                {
+                    temp.queuelevel++;
+                    q3.push(temp);
+                }
+                else
+                {
+                    q2.push(temp);
+                }
             }
         }
         else
         {
-            if(q3[0].remainingTime > 0)
+            if(q3.length > 0 && q3[0].remainingTime > 0)
             {
                 currTime += q3[0].remainingTime;
                 s-=q3[0].remainingTime;
@@ -145,8 +177,6 @@ export function mlfq(processes: Process[]): Result
                 q3.shift();
             }
         }
-
-
     }
     
     result.AverageTurnAroundTime = result.AverageTurnAroundTime/numProcesses;
