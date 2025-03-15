@@ -3,45 +3,22 @@
 import { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ChartOptions } from "chart.js";
-import { generateProcesses } from "../utilities/processGenerator";
-import { Process, Result } from "../types/process";
-import { FirstInFirstOut } from "../algorithms/fifo";
-import { sjf } from "../algorithms/sjf";
-import { rr } from "../algorithms/rr";
-import { stcf } from "@/algorithms/stcf";
-import { mlfq } from "@/algorithms/mlfq";
+import { Result } from "../types/process";
 import { motion } from "framer-motion";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const GanttChart = ({ numProcesses, quantum }: { numProcesses: number, quantum: number }) => {
-  const [result, setResult] = useState<Result | null>(null);
-  const [algorithm, setAlgorithm] = useState<string>('FIFO');
-  const [processes, setProcesses] = useState<Process[]>([]);
+const GanttChart = ({ algorithm, result }: { algorithm: string, result: Result }) => {
   const [currentTimeline, setCurrentTimeline] = useState<{ time: number, process: number }[]>([]);
   const [currentStep, setCurrentStep] = useState<number>(0);
 
   useEffect(() => {
-    const generatedProcesses = generateProcesses(numProcesses); // Generate the specified number of random processes
-    setProcesses(generatedProcesses);
-    let resultFromAlgorithm: Result = { timeline: [], AverageWaitTime: 0, AverageTurnAroundTime: 0 };
-
-    if (algorithm === 'FIFO') {
-      resultFromAlgorithm = FirstInFirstOut(generatedProcesses);
-    } else if (algorithm === 'SJF') {
-      resultFromAlgorithm = sjf(generatedProcesses);
-    } else if (algorithm === 'RR') {
-      resultFromAlgorithm = rr(generatedProcesses, quantum);
-    } else if (algorithm === 'STCF') {
-      resultFromAlgorithm = stcf(generatedProcesses);
-    } else if (algorithm === 'MLFQ') {
-      resultFromAlgorithm = mlfq(generatedProcesses);
+    if (result) {
+      console.log(`Timeline for ${algorithm}:`, result.timeline); // Debugging log
+      setCurrentTimeline(result.timeline);
+      setCurrentStep(0);
     }
-
-    setResult(resultFromAlgorithm); // Set result from the selected algorithm
-    setCurrentTimeline(resultFromAlgorithm.timeline);
-    setCurrentStep(0);
-  }, [algorithm, numProcesses, quantum]);
+  }, [result]);
 
   useEffect(() => {
     if (currentTimeline.length > 0 && currentStep < currentTimeline.length) {
@@ -132,50 +109,14 @@ const GanttChart = ({ numProcesses, quantum }: { numProcesses: number, quantum: 
 
   return (
     <div style={{ width: "80%", margin: "auto", paddingTop: "20px" }}>
-      <h2 style={{ color: "#fff", textAlign: "center" }}>Gantt Chart</h2>
-      <div style={{ textAlign: "center", marginBottom: "20px" }}>
-        <label htmlFor="algorithm" style={{ color: "#fff", marginRight: "10px" }}>Choose an algorithm:</label>
-        <select id="algorithm" value={algorithm} onChange={(e) => setAlgorithm(e.target.value)}>
-          <option value="FIFO">FIFO</option>
-          <option value="SJF">SJF</option>
-          <option value="RR">RR</option>
-          <option value="STCF">STCF</option>
-          <option value="MLFQ">MLFQ</option>
-        </select>
-      </div>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <div style={{ width: "45%" }}>
-          <h3 style={{ color: "#fff", textAlign: "center" }}>Processes</h3>
-          <table style={{ width: "100%", color: "#fff", borderCollapse: "collapse" }}>
-            <thead>
-              <tr>
-                <th style={{ border: "1px solid #fff", padding: "8px" }}>Process ID</th>
-                <th style={{ border: "1px solid #fff", padding: "8px" }}>Arrival Time</th>
-                <th style={{ border: "1px solid #fff", padding: "8px" }}>Burst Time</th>
-              </tr>
-            </thead>
-            <tbody>
-              {processes.map((process) => (
-                <tr key={process.pid}>
-                  <td style={{ border: "1px solid #fff", padding: "8px" }}>{process.pid}</td>
-                  <td style={{ border: "1px solid #fff", padding: "8px" }}>{process.arrivalTime}</td>
-                  <td style={{ border: "1px solid #fff", padding: "8px" }}>{process.burstTime}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <div style={{ width: "45%" }}>
-          <h3 style={{ color: "#fff", textAlign: "center" }}>{algorithm} Gantt Chart</h3>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1 }}
-          >
-            <Bar data={chartData(currentTimeline.slice(0, currentStep))} options={chartOptions} />
-          </motion.div>
-        </div>
-      </div>
+      <h2 style={{ color: "#fff", textAlign: "center" }}>{algorithm} Gantt Chart</h2>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+      >
+        <Bar data={chartData(currentTimeline.slice(0, currentStep))} options={chartOptions} />
+      </motion.div>
     </div>
   );
 };

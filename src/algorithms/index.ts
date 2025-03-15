@@ -1,6 +1,8 @@
 export * from './fifo';
 export * from './sjf';
 export * from './rr';
+export * from './stcf';
+export * from './mlfq';
 
 //fifo - first in first out
 //sjf  - shortest job first

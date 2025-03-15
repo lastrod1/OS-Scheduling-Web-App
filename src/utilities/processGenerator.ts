@@ -21,5 +21,6 @@ export function generateProcesses(count:number) : Process[]
                         remainingTime: burstTime,
                         queuelevel: 0});
     }
+    console.log("Generated Processes: ", processes); // Debugging log
     return processes
 }
