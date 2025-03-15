@@ -8,7 +8,6 @@ export function rr(processes: Process[], quantum: number): Result
         AverageWaitTime: 0,
         AverageTurnAroundTime: 0, 
     };
-    console.log("Processes in rr: ", processes); // Debugging log
     const sorted = processes.sort( (a, b) => a.arrivalTime - b.arrivalTime )
     
     let numProcesses = sorted.length;
@@ -30,7 +29,6 @@ export function rr(processes: Process[], quantum: number): Result
 
             if(!sorted[i].completed)
             {
-                console.log("(rr)Current process: ", sorted[i]); // Debugging log
                 if(sorted[i].remainingTime <= quantum && sorted[i].remainingTime > 0)
                 {
                     currTime += sorted[i].remainingTime;
@@ -58,6 +56,5 @@ export function rr(processes: Process[], quantum: number): Result
 
     result.AverageTurnAroundTime = result.AverageTurnAroundTime/numProcesses;
     result.AverageWaitTime = result.AverageWaitTime/numProcesses;
-    console.log("rr results: ", result); // Debugging log
     return result
 }

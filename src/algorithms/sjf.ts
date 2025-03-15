@@ -14,7 +14,6 @@ export function sjf(processes: Process[]): Result
     let currTime = 0; //for the timeline
     let WaitTime = 0; //for calculating average wait time late
     let TurnAroundTime = 0; //for calculating average turnaround time later
-    console.log("Sorted processes: ", sorted);
     for(let i = 0; i<numProcesses; i++)
     {
         let index = -1;
@@ -49,6 +48,6 @@ export function sjf(processes: Process[]): Result
     }
     result.AverageTurnAroundTime = result.AverageTurnAroundTime/numProcesses;
     result.AverageWaitTime = result.AverageWaitTime/numProcesses;
-    console.log("sjf returned");
+
     return result
 }

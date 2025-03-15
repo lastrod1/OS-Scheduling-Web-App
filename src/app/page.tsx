@@ -28,7 +28,6 @@ export default function Home() {
 
   useEffect(() => {
     const generatedProcesses = generateProcesses(numProcesses);
-    console.log("Generated Processes:", generatedProcesses); // Debugging log
     setProcesses(generatedProcesses);
   }, [numProcesses]);
 
@@ -38,19 +37,19 @@ export default function Home() {
     selectedAlgorithms.forEach((algorithm) => {
       let resultFromAlgorithm: Result = { timeline: [], AverageWaitTime: 0, AverageTurnAroundTime: 0 };
 
+      const processesCopy = JSON.parse(JSON.stringify(processes)); // Deep copy to avoid mutation
       if (algorithm === 'FIFO') {
-        resultFromAlgorithm = FirstInFirstOut(processes);
+        resultFromAlgorithm = FirstInFirstOut(processesCopy);
       } else if (algorithm === 'SJF') {
-        resultFromAlgorithm = sjf(processes);
+        resultFromAlgorithm = sjf(processesCopy);
       } else if (algorithm === 'RR') {
-        resultFromAlgorithm = rr(processes, quantum);
+        resultFromAlgorithm = rr(processesCopy, quantum);
       } else if (algorithm === 'STCF') {
-        resultFromAlgorithm = stcf(processes);
+        resultFromAlgorithm = stcf(processesCopy);
       } else if (algorithm === 'MLFQ') {
-        resultFromAlgorithm = mlfq(processes);
+        resultFromAlgorithm = mlfq(processesCopy);
       }
 
-      console.log(`Result for ${algorithm}:`, resultFromAlgorithm); // Debugging log
       newResults[algorithm] = resultFromAlgorithm;
     });
 

@@ -14,7 +14,6 @@ const GanttChart = ({ algorithm, result }: { algorithm: string, result: Result }
 
   useEffect(() => {
     if (result) {
-      console.log(`Timeline for ${algorithm}:`, result.timeline); // Debugging log
       setCurrentTimeline(result.timeline);
       setCurrentStep(0);
     }
