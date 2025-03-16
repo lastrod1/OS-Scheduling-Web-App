@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint no-use-before-define: 0 */  // --> OFF
 "use client";
 
 import { useEffect, useState } from "react";
@@ -68,7 +70,6 @@ const GanttChart = ({ algorithm, result }: { algorithm: string, result: Result }
         {
           label: "Process Execution Time",
           data,
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           backgroundColor: (context: any) => {
             const label = context.raw.y;
             return label === "Idle" ? "rgba(200, 200, 200, 0.8)" : "rgba(52, 152, 219, 0.8)"; // Gray for Idle, Blue for processes
@@ -98,7 +99,6 @@ const GanttChart = ({ algorithm, result }: { algorithm: string, result: Result }
       legend: { display: false },
       tooltip: {
         callbacks: {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           label: (context: any) => {
             const { raw } = context;
             return `Start: ${raw.x[0]}, End: ${raw.x[1]}`;
