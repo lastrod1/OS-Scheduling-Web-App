@@ -24,20 +24,20 @@ export function mlfq(processes: Process[]): Result
     };
     const sorted = processes.sort( (a, b) => a.arrivalTime - b.arrivalTime )
     
-    let numProcesses = sorted.length;
+    const numProcesses = sorted.length;
     let currTime = 0; //for the timeline
     let TurnAroundTime = 0; //for calculating average turnaround time later
     let completedProcesses = 0;
 
-    let q1quantum = 2; //quantum for queue 1
-    let q2quantum = 4; //quantum for queue 2
-    let allotment = 4;
+    const q1quantum = 2; //quantum for queue 1
+    const q2quantum = 4; //quantum for queue 2
+    const allotment = 4;
     let s = 20; //after 20 units of time. move all processes to the highest priority
 
     let lastProcess = 0; //index of the last process that was put into the queue to ensure no duplicate processes
-    let q1: Process[] = [];
-    let q2: Process[] = [];
-    let q3: Process[] = [];
+    const q1: Process[] = [];
+    const q2: Process[] = [];
+    const q3: Process[] = [];
 
     while(completedProcesses < numProcesses)
     {
@@ -87,7 +87,7 @@ export function mlfq(processes: Process[]): Result
                 s-=q1quantum;
                 q1[0].remainingTime -= q1quantum;
                 result.timeline.push({time: currTime, process: q1[0].pid});
-                let temp : Process = q1[0];
+                const temp : Process = q1[0];
                 q1.shift();
                 if((temp.burstTime - temp.remainingTime) % allotment == 0)
                 {
@@ -127,7 +127,7 @@ export function mlfq(processes: Process[]): Result
                 s-=q2quantum;
                 q2[0].remainingTime -= q2quantum;
                 result.timeline.push({time: currTime, process: q2[0].pid});
-                let temp : Process = q2[0];
+                const temp : Process = q2[0];
                 q2.push(temp);
                 q2.shift();
                 if((temp.burstTime - temp.remainingTime) % allotment == 0)
@@ -166,13 +166,13 @@ export function mlfq(processes: Process[]): Result
             s = 20;
             for(let i = 0; i<q2.length; i++)
             {
-                let temp : Process = q2[0];
+                const temp : Process = q2[0];
                 q1.push(temp);
                 q2.shift();
             }
             for(let i = 0; i<q3.length; i++)
             {
-                let temp : Process = q3[0];
+                const temp : Process = q3[0];
                 q1.push(temp);
                 q3.shift();
             }

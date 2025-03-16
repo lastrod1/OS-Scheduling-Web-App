@@ -5,11 +5,11 @@ import { Process } from "../types/process";
 
 export function generateProcesses(count:number) : Process[]
 {
-    let MaxBurst = 7;
-    let MaxArrival = 7;
+    const MaxBurst = 7;
+    const MaxArrival = 7;
     let burstTime = 0; // need a variable so that remaining time and burst time are the sae
 
-    let processes: Process[] = [];
+    const processes: Process[] = [];
 
     for(let i = 0; i < count; i++)
     {

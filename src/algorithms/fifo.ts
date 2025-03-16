@@ -11,7 +11,7 @@ export function FirstInFirstOut(processes: Process[]): Result
     
     const sorted = processes.sort( (a, b) => a.arrivalTime - b.arrivalTime )
     
-    let numProcesses = processes.length;
+    const numProcesses = processes.length;
     let currTime = 0; //for the timeline
     let TurnAroundTime = 0;
     let totalWaitTime = 0; //for calculating average wait time late

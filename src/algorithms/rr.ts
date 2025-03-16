@@ -10,7 +10,7 @@ export function rr(processes: Process[], quantum: number): Result
     };
     const sorted = processes.sort( (a, b) => a.arrivalTime - b.arrivalTime )
     
-    let numProcesses = sorted.length;
+    const numProcesses = sorted.length;
     let currTime = 0; //for the timeline
     let TurnAroundTime = 0;
     let done = false;

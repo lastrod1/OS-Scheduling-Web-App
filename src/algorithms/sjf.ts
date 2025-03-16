@@ -10,7 +10,7 @@ export function sjf(processes: Process[]): Result
     };
     const sorted = processes.sort( (a, b) => a.arrivalTime - b.arrivalTime )
     
-    let numProcesses = sorted.length;
+    const numProcesses = sorted.length;
     let currTime = 0; //for the timeline
     let WaitTime = 0; //for calculating average wait time late
     let TurnAroundTime = 0; //for calculating average turnaround time later
