@@ -181,6 +181,5 @@ export function mlfq(processes: Process[]): Result
     
     result.AverageTurnAroundTime = result.AverageTurnAroundTime/numProcesses;
     result.AverageWaitTime = result.AverageWaitTime/numProcesses;
-
     return result
 }

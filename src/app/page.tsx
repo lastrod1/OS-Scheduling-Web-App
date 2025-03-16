@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import GanttChart from "./GanttChart";
 import Table from "./Table";
+import BarChart from "./BarChart";
 import { PDF } from "../utilities/PDF";
 import { generateProcesses } from "../utilities/processGenerator";
 import { Process, Result } from "../types/process";
@@ -27,30 +28,37 @@ export default function Home() {
   const [processes, setProcesses] = useState<Process[]>([]);
   const [results, setResults] = useState<{ [key: string]: Result }>({});
 
+  const waitTimeChartRef = useRef<HTMLCanvasElement>(null);
+  const turnaroundTimeChartRef = useRef<HTMLCanvasElement>(null);
+
   useEffect(() => {
-    const generatedProcesses = generateProcesses(numProcesses);
-    setProcesses(generatedProcesses);
+    setProcesses(generateProcesses(numProcesses));
   }, [numProcesses]);
 
   useEffect(() => {
     if (processes.length === 0) return;
 
     const newResults: { [key: string]: Result } = {};
-
     selectedAlgorithms.forEach((algorithm) => {
+      const processesCopy = JSON.parse(JSON.stringify(processes)); // Deep copy to avoid mutation
       let resultFromAlgorithm: Result = { timeline: [], AverageWaitTime: 0, AverageTurnAroundTime: 0 };
 
-      const processesCopy = JSON.parse(JSON.stringify(processes)); // Deep copy to avoid mutation
-      if (algorithm === 'FIFO') {
-        resultFromAlgorithm = FirstInFirstOut(processesCopy);
-      } else if (algorithm === 'SJF') {
-        resultFromAlgorithm = sjf(processesCopy);
-      } else if (algorithm === 'RR') {
-        resultFromAlgorithm = rr(processesCopy, quantum);
-      } else if (algorithm === 'STCF') {
-        resultFromAlgorithm = stcf(processesCopy);
-      } else if (algorithm === 'MLFQ') {
-        resultFromAlgorithm = mlfq(processesCopy);
+      switch (algorithm) {
+        case 'FIFO':
+          resultFromAlgorithm = FirstInFirstOut(processesCopy);
+          break;
+        case 'SJF':
+          resultFromAlgorithm = sjf(processesCopy);
+          break;
+        case 'RR':
+          resultFromAlgorithm = rr(processesCopy, quantum);
+          break;
+        case 'STCF':
+          resultFromAlgorithm = stcf(processesCopy);
+          break;
+        case 'MLFQ':
+          resultFromAlgorithm = mlfq(processesCopy);
+          break;
       }
 
       newResults[algorithm] = resultFromAlgorithm;
@@ -61,11 +69,13 @@ export default function Home() {
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = event.target;
-    if (checked) {
-      setSelectedAlgorithms([...selectedAlgorithms, value]);
-    } else {
-      setSelectedAlgorithms(selectedAlgorithms.filter(algorithm => algorithm !== value));
-    }
+    setSelectedAlgorithms((prev) =>
+      checked ? [...prev, value] : prev.filter((algorithm) => algorithm !== value)
+    );
+  };
+
+  const handleGeneratePDF = () => {
+    PDF(waitTimeChartRef.current, turnaroundTimeChartRef.current);
   };
 
   return (
@@ -85,7 +95,7 @@ export default function Home() {
       </div>
 
       <button
-        onClick={() => PDF("Gantt Chart Results", document.getElementById("gantt-table"))}
+        onClick={handleGeneratePDF}
         style={{ padding: "10px 20px", backgroundColor: "#007bff", color: "#fff", border: "none", borderRadius: "5px", cursor: "pointer", textAlign: "center"}}
       >
         Generate PDF
@@ -115,8 +125,13 @@ export default function Home() {
           </label>
         ))}
       </div>
-      
-      <Table processes={processes}/>
+
+      <Table processes={processes} />
+      <BarChart
+        results={results}
+        waitTimeChartRef={waitTimeChartRef}
+        turnaroundTimeChartRef={turnaroundTimeChartRef}
+      />
 
       {selectedAlgorithms.map((algorithm) => (
         <GanttChart
@@ -125,6 +140,7 @@ export default function Home() {
           result={results[algorithm]}
         />
       ))}
+
     </div>
   );
 }

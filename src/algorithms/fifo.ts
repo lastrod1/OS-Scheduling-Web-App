@@ -13,6 +13,7 @@ export function FirstInFirstOut(processes: Process[]): Result
     
     let numProcesses = processes.length;
     let currTime = 0; //for the timeline
+    let TurnAroundTime = 0;
     let totalWaitTime = 0; //for calculating average wait time late
     let totalTurnAroundTime = 0; //for calculating average turnaround time later
 
@@ -30,8 +31,9 @@ export function FirstInFirstOut(processes: Process[]): Result
         //wait time = turnaround time - burst time
         //turnaround time = completion time - arrival time
 
-        totalTurnAroundTime = totalTurnAroundTime + (currTime - sorted[i].arrivalTime);
-        totalWaitTime = totalWaitTime + ((currTime - sorted[i].arrivalTime) - sorted[i].burstTime);
+        TurnAroundTime = currTime - sorted[i].arrivalTime;
+        totalTurnAroundTime = totalTurnAroundTime + TurnAroundTime;
+        totalWaitTime = totalWaitTime + (TurnAroundTime - sorted[i].burstTime);
         
     }
 
