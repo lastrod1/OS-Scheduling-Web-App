@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import GanttChart from "./GanttChart";
+import Table from "./Table";
 import { PDF } from "../utilities/PDF";
 import { generateProcesses } from "../utilities/processGenerator";
 import { Process, Result } from "../types/process";
@@ -32,6 +33,8 @@ export default function Home() {
   }, [numProcesses]);
 
   useEffect(() => {
+    if (processes.length === 0) return;
+
     const newResults: { [key: string]: Result } = {};
 
     selectedAlgorithms.forEach((algorithm) => {
@@ -112,6 +115,8 @@ export default function Home() {
           </label>
         ))}
       </div>
+      
+      <Table processes={processes}/>
 
       {selectedAlgorithms.map((algorithm) => (
         <GanttChart
