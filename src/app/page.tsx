@@ -80,9 +80,6 @@ export default function Home() {
 
   return (
     <div style={{ padding: "0px", backgroundColor: "#000000", minHeight: "100vh" }}>
-      <h1 style={{ color: "#fff" }}>Gantt Chart</h1>
-      <p style={{ color: "#bbb" }}>Shows processes</p>
-
       <div style={{ textAlign: "center", marginBottom: "20px" }}>
         <label htmlFor="numProcesses" style={{ color: "#fff", marginRight: "10px" }}>Number of Processes:</label>
         <input
@@ -94,13 +91,6 @@ export default function Home() {
         />
       </div>
 
-      <button
-        onClick={handleGeneratePDF}
-        style={{ padding: "10px 20px", backgroundColor: "#007bff", color: "#fff", border: "none", borderRadius: "5px", cursor: "pointer", textAlign: "center"}}
-      >
-        Generate PDF
-      </button>
-
       <div style={{ textAlign: "center", marginBottom: "20px" }}>
         <label htmlFor="quantum" style={{ color: "#fff", marginRight: "10px" }}>Quantum (for RR):</label>
         <input
@@ -110,6 +100,21 @@ export default function Home() {
           onChange={(e) => setQuantum(Number(e.target.value))}
           style={{ padding: "5px", width: "50px" }}
         />
+      </div>
+
+      <div style={{ textAlign: "center", marginBottom: "20px" }}>
+        <button
+          onClick={handleGeneratePDF}
+          style={{
+            padding: "10px 20px",
+            backgroundColor: "#007bff",
+            color: "white",
+            border: "none",
+            borderRadius: "5px"
+          }}
+        >
+          Generate PDF
+        </button>
       </div>
 
       <div style={{ textAlign: "center", marginBottom: "20px" }}>

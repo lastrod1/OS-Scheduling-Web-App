@@ -5,6 +5,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <head>
         <title>Scheduling Algorithms</title>
+        <style>{`
+          html, body {
+            background-color: black;
+          }
+        `}</style>
       </head>
       <body>
         {children}
