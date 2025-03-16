@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ChartOptions, ChartData, TooltipItem, ScriptableContext } from "chart.js";
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ChartOptions } from "chart.js";
 import { Result } from "../types/process";
 import { motion } from "framer-motion";
 
@@ -57,7 +57,7 @@ const GanttChart = ({ algorithm, result }: { algorithm: string, result: Result }
     return { labels, data };
   };
 
-  const chartData = (timeline: { time: number, process: number }[]): ChartData<'bar'> => {
+  const chartData = (timeline: { time: number, process: number }[]) => {
     if (timeline.length === 0) return { labels: [], datasets: [] }; // Ensure timeline is available
 
     const { labels, data } = generateGanttChartData(timeline);
@@ -67,9 +67,9 @@ const GanttChart = ({ algorithm, result }: { algorithm: string, result: Result }
       datasets: [
         {
           label: "Process Execution Time",
-          data: data.map(d => d.x),
-          backgroundColor: (context: ScriptableContext<'bar'>) => {
-            const label = (context.raw as { y: string }).y;
+          data,
+          backgroundColor: (context: any) => {
+            const label = context.raw.y;
             return label === "Idle" ? "rgba(200, 200, 200, 0.8)" : "rgba(52, 152, 219, 0.8)"; // Gray for Idle, Blue for processes
           },
           borderColor: "#fff",
@@ -97,9 +97,9 @@ const GanttChart = ({ algorithm, result }: { algorithm: string, result: Result }
       legend: { display: false },
       tooltip: {
         callbacks: {
-          label: (context: TooltipItem<'bar'>) => {
+          label: (context: any) => {
             const { raw } = context;
-            return `Start: ${(raw as { x: [number, number] }).x[0]}, End: ${(raw as { x: [number, number] }).x[1]}`;
+            return `Start: ${raw.x[0]}, End: ${raw.x[1]}`;
           },
         },
       },

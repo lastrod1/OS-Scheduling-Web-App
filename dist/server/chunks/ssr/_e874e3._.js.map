@@ -1,0 +1,9 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 7, "column": 0}, "map": {"version":3,"sources":["file:///Users/minhtran/Desktop/College%20stuff/5th%20Semester%20%28Spring%202025%29/Operating%20Systems%20%28CS%20540%29/scheduling-algorithms-project/src/app/layout.tsx"],"sourcesContent":["import React from 'react';\n\nexport default function RootLayout({ children }: { children: React.ReactNode }) {\n  return (\n    <html lang=\"en\">\n      <head>\n        <title>Scheduling Algorithms</title>\n        <style>{`\n          html, body {\n            background-color: black;\n          }\n        `}</style>\n      </head>\n      <body>\n        {children}\n      </body>\n    </html>\n  );\n}"],"names":[],"mappings":";;;;;AAEe,SAAS,WAAW,EAAE,QAAQ,EAAiC;IAC5E,qBACE,8OAAC;QAAK,MAAK;;0BACT,8OAAC;;kCACC,8OAAC;kCAAM;;;;;;kCACP,8OAAC;kCAAO,CAAC;;;;QAIT,CAAC;;;;;;;;;;;;0BAEH,8OAAC;0BACE;;;;;;;;;;;;AAIT"}},
+    {"offset": {"line": 56, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"A"}},
+    {"offset": {"line": 67, "column": 0}, "map": {"version":3,"sources":["file:///Users/minhtran/Desktop/College%20stuff/5th%20Semester%20%28Spring%202025%29/Operating%20Systems%20%28CS%20540%29/scheduling-algorithms-project/node_modules/next/src/server/route-modules/app-page/vendored/rsc/react-jsx-dev-runtime.ts"],"sourcesContent":["module.exports = require('../../module.compiled').vendored[\n  'react-rsc'\n].ReactJsxDevRuntime\n"],"names":["module","exports","require","vendored","ReactJsxDevRuntime"],"mappings":";AAAAA,OAAOC,OAAO,GAAGC,QAAQ,0HAAyBC,QAAQ,CACxD,YACD,CAACC,kBAAkB","ignoreList":[0]}},
+    {"offset": {"line": 69, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"A"}}]
+}
